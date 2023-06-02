@@ -5,8 +5,7 @@ using namespace std;
 
 int main() {
 	Sudoku sodoku;
-	sodoku.generateSudoku();
-	sodoku.printBoard();
+	sodoku.generateSudoku(20);
 	system("pause");
 	return 0;
 }
