@@ -1,3 +1,5 @@
-﻿  sudoku.cpp
+﻿  main.cpp
+  sudoku.cpp
 d:\copy\nku\softwareengineering\sudoku\sudoku\sudoku.cpp(83): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码...
   sudoku.vcxproj -> D:\copy\nku\SoftwareEngineering\sudoku\Debug\sudoku.exe

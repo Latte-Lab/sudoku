@@ -97,7 +97,7 @@ bool Sudoku::trySolve(int index) {
 	return false;	// 所有可能的数字都试过后，求解失败
 }
 
-void Sudoku::generateSudoku(int blankNum) {
+void Sudoku::generateBoard() {
 	// 生成一个符合数独规则的完整棋盘
 	// 在最中间的一大格随机生成不重复的9个数字
 	bool middle[9] = { false };			// 表示9个数字是否被使用过了
@@ -120,7 +120,11 @@ void Sudoku::generateSudoku(int blankNum) {
 	for (int i = 0; i < 9; i++)
 		for (int j = 0; j < 9; j++)
 			result[i][j] = board[i][j];
-	printResult();
+}
+
+void Sudoku::generateSudoku(int blankNum) {
+	// 生成一个符合数独规则的完整棋盘
+	generateBoard();
 
 	// 挖掉blankNum个空
 	while (blankNum) {
@@ -142,7 +146,6 @@ void Sudoku::generateSudoku(int blankNum) {
 			blankCol.pop_back();
 		}
 	}
-	printBoard();
 }
 
 void Sudoku::solveSudoku() {
@@ -154,27 +157,32 @@ void Sudoku::solveSudoku() {
 	trySolve(0);
 }
 
-void Sudoku::printBoard() {
-	cout << "-------Sudoku-------" << endl;
+string Sudoku::printBoard() {
+	string out = "";
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			if (board[i][j] == '0')
-				cout << "  ";
-			else
-				cout << board[i][j] << " ";
+				out.append("  ");
+			else {
+				out += board[i][j];
+				out.append(" ");
+			}
 		}
-		cout << endl;
+		out.append("\n");
 	}
+	return out;
 }
 
-void Sudoku::printResult() {
-	cout << "-------Result-------" << endl;
+string Sudoku::printResult() {
+	string out = "";
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			cout << board[i][j] << " ";
+			out += result[i][j];
+			out.append(" ");
 		}
-		cout << endl;
+		out.append("\n");
 	}
+	return out;
 }
 
 

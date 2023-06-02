@@ -12,8 +12,9 @@ private:
 	void transform(int x, int y, bool isRow);
 	bool trySolve(int index);
 public:
+	void generateBoard();
 	void generateSudoku(int blankNum);
 	void solveSudoku();
-	void printBoard();
-	void printResult();
+	string printBoard();
+	string printResult();
 };
