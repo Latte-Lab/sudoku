@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 #include <random>
 #include <vector>
+#include <string>
+#include <ctime>
 #include "sudoku.h"
 using namespace std;
 
@@ -55,46 +57,66 @@ bool Sudoku::trySolve(int index) {
 	bool colUsed[9] = { false };
 	bool blockUsed[9] = { false };
 	for (int j = 0; j < 9; j++) {
-		if (board[row][j] == '0')
+		if (midResult[row][j] == '0')
 			continue;
-		rowUsed[board[row][j] - '0' - 1] = true;
+		rowUsed[midResult[row][j] - '0' - 1] = true;
 	}
 	for (int i = 0; i < 9; i++) {
-		if (board[i][col] == '0')
+		if (midResult[i][col] == '0')
 			continue;
-		colUsed[board[i][col] - '0' - 1] = true;
+		colUsed[midResult[i][col] - '0' - 1] = true;
 	}
 	for (int i = row / 3 * 3; i < row / 3 * 3 + 3; i++)
 		for (int j = col / 3 * 3; j < col / 3 * 3 + 3; j++) {
-			if (board[i][j] == '0')
+			if (midResult[i][j] == '0')
 				continue;
-			blockUsed[board[i][j] - '0' - 1] = true;
+			blockUsed[midResult[i][j] - '0' - 1] = true;
 		}
 	vector<int> possibleNum;	// 可能填入的数字
 	for (int i = 0; i < 9; i++) {
 		if (!rowUsed[i] && !colUsed[i] && !blockUsed[i]) {
 			possibleNum.push_back(i);
-			break;
 		}
 	}
 	// 无满足数独规则的可填入的数字，求解失败
 	if (possibleNum.size() == 0)
 		return false;
 	for (int i = 0; i < possibleNum.size(); i++) {
-		result[row][col] = possibleNum[i] + '1';
+		midResult[row][col] = possibleNum[i] + '1';
 		// 所有空都填入成功
 		if ((index + 1) == blankRow.size()) {
 			solution++;
-			return true;
+			// result中只保存一种可能的解
+			if (solution == 1) {
+				for (int i = 0; i < 9; i++)
+					for (int j = 0; j < 9; j++)
+						finalResult[i][j] = midResult[i][j];
+			}
+			if (unique)
+				return false;	// 虽然成功了也要return false，这样才能求出每一种可能的解
+			else
+				return true;	// 没有要求唯一解，找到一种可能的解就返回
 		}
 		// 继续填入下一个，如果下一个没有可以填入的，撤回这一个填入的数字
-		if (!trySolve(++index)) {
-			result[row][col] = '0';
+		if (!trySolve(index+1)) {
+			midResult[row][col] = '0';
 		}
 		else
 			return true;
 	}
 	return false;	// 所有可能的数字都试过后，求解失败
+}
+
+void Sudoku::setBoard(string str) {
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			board[i][j] = str[i * 9 + j];
+			if (board[i][j] == '0') {
+				blankRow.push_back(i);
+				blankCol.push_back(j);
+			}
+		}
+	}
 }
 
 void Sudoku::generateBoard() {
@@ -116,18 +138,20 @@ void Sudoku::generateBoard() {
 	transform(0, 0, true);
 	transform(6, 0, true);
 
-	// 先保存完整的答案
+	// 保存完整的答案
 	for (int i = 0; i < 9; i++)
 		for (int j = 0; j < 9; j++)
-			result[i][j] = board[i][j];
+			finalResult[i][j] = board[i][j];
 }
 
-void Sudoku::generateSudoku(int blankNum) {
+void Sudoku::generateSudoku(int blankNum, bool uni) {
+	this->unique = uni;
 	// 生成一个符合数独规则的完整棋盘
 	generateBoard();
 
 	// 挖掉blankNum个空
 	while (blankNum) {
+		srand(time(0));
 		int x = rand() % 9;
 		int y = rand() % 9;
 		if (board[x][y] == '0')
@@ -138,7 +162,7 @@ void Sudoku::generateSudoku(int blankNum) {
 		blankCol.push_back(y);
 		solveSudoku();
 		// 挖空后尝试求解，若有解则合法，无解则重新填上该空
-		if (solution)
+		if ((unique && (solution == 1)) || (!unique && solution))
 			blankNum--;
 		else {
 			board[x][y] = temp;
@@ -152,7 +176,7 @@ void Sudoku::solveSudoku() {
 	solution = 0;
 	for (int i = 0; i < 9; i++)
 		for (int j = 0; j < 9; j++)
-			result[i][j] = board[i][j];
+			midResult[i][j] = board[i][j];
 	// 回溯算法求解数独
 	trySolve(0);
 }
@@ -161,12 +185,8 @@ string Sudoku::printBoard() {
 	string out = "";
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			if (board[i][j] == '0')
-				out.append("  ");
-			else {
-				out += board[i][j];
-				out.append(" ");
-			}
+			out += board[i][j];
+			out.append(" ");
 		}
 		out.append("\n");
 	}
@@ -177,7 +197,7 @@ string Sudoku::printResult() {
 	string out = "";
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			out += result[i][j];
+			out += finalResult[i][j];
 			out.append(" ");
 		}
 		out.append("\n");
