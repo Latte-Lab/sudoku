@@ -1,3 +1,5 @@
+#ifndef SUDOKU_H 
+#define SUDOKU_H
 #include <iostream>
 #include <random>
 #include <string>
@@ -7,12 +9,12 @@
 #include "sudoku.h"
 using namespace std;
 
-string readTxt(string name) {
+string readTxt(const string name) {
 	ifstream is;
 	is.open(name, ios::in);
 	string content;
 	while (!is.eof()) {
-		// Öğ×Ö·û¶ÁÈ¡
+		// é€å­—ç¬¦è¯»å–
 		// --------0--------7065980...70859--------1--------
 		char c;
 		is >> c;
@@ -23,7 +25,7 @@ string readTxt(string name) {
 	return content;
 }
 
-void writeTxt(string name, string content) {
+void writeTxt(const string name, const string content) {
 	ofstream os;
 	os.open(name, ios::out);
 	os << content;
@@ -43,12 +45,12 @@ int main() {
 		return 0;
 	}
 	if (cmd[0] == "-c") {
-		// Éú³Én¸öÊı¶ÀÖÕ¾Ö
+		// ç”Ÿæˆnä¸ªæ•°ç‹¬ç»ˆå±€
 		int gameNum = 0;
 		try {
 			gameNum = atoi(cmd[1].c_str());
 		}
-		catch (exception e) {	// Òì³£Ö÷ÒªÊÇÃ»ÓĞÊäÈën»òÕßÊäÈëµÄ·ÇÕûÊı
+		catch (exception e) {	// å¼‚å¸¸ä¸»è¦æ˜¯æ²¡æœ‰è¾“å…¥næˆ–è€…è¾“å…¥çš„éæ•´æ•°
 			cout << "Error: Please input the number of game!" << endl;
 		}
 		if (gameNum < 1 || gameNum>1000000) {
@@ -63,23 +65,23 @@ int main() {
 		cout << "Generated " << gameNum << " sudoku boards!" << endl;
 	}
 	else if (cmd[0] == "-s") {
-		// ´ÓÎÄ¼şÖĞ¶ÁÈ¡Êı¶ÀÓÎÏ·²¢Çó½â£¬½«´ğ°¸±£´æµ½sudoku.txtÖĞ
+		// ä»æ–‡ä»¶ä¸­è¯»å–æ•°ç‹¬æ¸¸æˆå¹¶æ±‚è§£ï¼Œå°†ç­”æ¡ˆä¿å­˜åˆ°sudoku.txtä¸­
 		string filename;
 		string content;
 		try {
 			filename = cmd[1];
 			content = readTxt(filename);
-			// ¼ì²éÊÇ·ñÊÇºÏ·¨ÓĞĞ§µÄÊı¶ÀÓÎÏ·
-			// --------0--------¼ÓÉÏ81¸öÊı¶ÀÊı×Ö=98
+			// æ£€æŸ¥æ˜¯å¦æ˜¯åˆæ³•æœ‰æ•ˆçš„æ•°ç‹¬æ¸¸æˆ
+			// --------0--------åŠ ä¸Š81ä¸ªæ•°ç‹¬æ•°å­—=98
 			if (content.length() == 0 || content.length() % 98) {
 				throw "Error: Please input a valid txt file!";
 			}
 		}
-		catch (exception e) {	// Òì³£Ö÷ÒªÊÇÃ»ÓĞÊäÈë»òÊäÈë´íÎóµÄÎÄ¼şÃû£¬ÄÚÈİ²»ºÏ·¨
+		catch (exception e) {	// å¼‚å¸¸ä¸»è¦æ˜¯æ²¡æœ‰è¾“å…¥æˆ–è¾“å…¥é”™è¯¯çš„æ–‡ä»¶åï¼Œå†…å®¹ä¸åˆæ³•
 			cout << "Error: Please input a valid txt file!" << endl;
 		}
 		int gameNum = content.length() / 98;
-		string answer = ""; 
+		string answer = "";
 		for (int i = 0; i < gameNum; i++) {
 			Sudoku sudoku;
 			sudoku.setBoard(content.substr(i * 98 + 17, 81));
@@ -98,12 +100,12 @@ int main() {
 		cout << "Solved " << gameNum << " sudokus to sudoku.txt!" << endl;
 	}
 	else if (cmd[0] == "-n") {
-		// Éú³ÉÊı¶ÀÓÎÏ·£¬±£´æµ½game.txtÖĞ
+		// ç”Ÿæˆæ•°ç‹¬æ¸¸æˆï¼Œä¿å­˜åˆ°game.txtä¸­
 		int gameNum = 0;
 		try {
 			gameNum = atoi(cmd[1].c_str());
 		}
-		catch (exception e) {	// Òì³£Ö÷ÒªÊÇÃ»ÓĞÊäÈën»òÕßÊäÈëµÄ·ÇÕûÊı
+		catch (exception e) {	// å¼‚å¸¸ä¸»è¦æ˜¯æ²¡æœ‰è¾“å…¥næˆ–è€…è¾“å…¥çš„éæ•´æ•°
 			cout << "Error: Please input the number of game!" << endl;
 		}
 		if (gameNum < 1 || gameNum > 10000) {
@@ -113,18 +115,18 @@ int main() {
 		bool unique = false;
 		if (cmd.size() > 2) {
 			if (cmd[2] == "-m") {
-				// ÉèÖÃÉú³ÉÓÎÏ·µÄÄÑ¶È
+				// è®¾ç½®ç”Ÿæˆæ¸¸æˆçš„éš¾åº¦
 				int level = 0;
 				try {
 					level = atoi(cmd[3].c_str());
 				}
-				catch (exception e) {	// Òì³£Ö÷ÒªÊÇÃ»ÓĞÊäÈë»òÕßÊäÈëµÄ·ÇÕûÊı
+				catch (exception e) {	// å¼‚å¸¸ä¸»è¦æ˜¯æ²¡æœ‰è¾“å…¥æˆ–è€…è¾“å…¥çš„éæ•´æ•°
 					cout << "Error: Please input the level of game!" << endl;
 				}
 				if (level < 1 || level > 3) {
 					cout << "Error: Please input a valid level(1-3)!" << endl;
 				}
-				// ÄÑ¶ÈÔ½¸ß£¬ÍÚ¿ÕÔ½¶à
+				// éš¾åº¦è¶Šé«˜ï¼ŒæŒ–ç©ºè¶Šå¤š
 				if (level == 1) {
 					blankNumLeft = 20;
 					blankNumRight = 30;
@@ -139,7 +141,7 @@ int main() {
 				}
 			}
 			else if (cmd[2] == "-r") {
-				// ÉèÖÃÍÚ¿Õ·¶Î§
+				// è®¾ç½®æŒ–ç©ºèŒƒå›´
 				string range;
 				try {
 					int index = cmd[3].find("-");
@@ -149,12 +151,12 @@ int main() {
 						throw "Error: Please input a valid range(20-55)!";
 					}
 				}
-				catch (exception e) {	// Òì³£Ö÷ÒªÊÇÃ»ÓĞÊäÈë»òÕßÊäÈëµÄ·ÇÕûÊı·¶Î§
+				catch (exception e) {	// å¼‚å¸¸ä¸»è¦æ˜¯æ²¡æœ‰è¾“å…¥æˆ–è€…è¾“å…¥çš„éæ•´æ•°èŒƒå›´
 					cout << "Error: Please input the range of blanks!" << endl;
 				}
 			}
 			else if (cmd[2] == "-u") {
-				// ÉèÖÃÉú³ÉµÄ½âÎ¨Ò»
+				// è®¾ç½®ç”Ÿæˆçš„è§£å”¯ä¸€
 				unique = true;
 			}
 		}
@@ -178,3 +180,5 @@ int main() {
 	system("pause");
 	return 0;
 }
+
+#endif

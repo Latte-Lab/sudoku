@@ -6,7 +6,7 @@
 #include "sudoku.h"
 using namespace std;
 
-void Sudoku::transform(int x, int y, bool isRow) {
+inline void Sudoku::transform(int x, int y, bool isRow) {
 	if (isRow) {
 		// 左边行变换
 		for (int i = x; i < (x + 3); i++) {
@@ -98,7 +98,7 @@ bool Sudoku::trySolve(int index) {
 				return true;	// 没有要求唯一解，找到一种可能的解就返回
 		}
 		// 继续填入下一个，如果下一个没有可以填入的，撤回这一个填入的数字
-		if (!trySolve(index+1)) {
+		if (!trySolve(index + 1)) {
 			midResult[row][col] = '0';
 		}
 		else
