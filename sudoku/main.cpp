@@ -80,11 +80,11 @@ int main() {
 		catch (exception e) {	// 异常主要是没有输入或输入错误的文件名，内容不合法
 			cout << "Error: Please input a valid txt file!" << endl;
 		}
-		int gameNum = content.length() / 98;
+		int gameNum = static_cast<int>(content.length() / 98);
 		string answer = "";
 		for (int i = 0; i < gameNum; i++) {
 			Sudoku sudoku;
-			sudoku.setBoard(content.substr(i * 98 + 17, 81));
+			sudoku.setBoard(content.substr(static_cast<size_t>(i) * 98 + 17, 81));
 			sudoku.solveSudoku();
 			answer.append("--------");
 			answer.append(to_string(i));
@@ -144,9 +144,9 @@ int main() {
 				// 设置挖空范围
 				string range;
 				try {
-					int index = cmd[3].find("-");
+					int index = static_cast<int>(cmd[3].find("-"));
 					blankNumLeft = atoi(cmd[3].substr(0, index).c_str());
-					blankNumRight = atoi(cmd[3].substr(index + 1, cmd[3].length()).c_str());
+					blankNumRight = atoi(cmd[3].substr(static_cast<size_t>(index) + 1, cmd[3].length()).c_str());
 					if (blankNumLeft<20 || blankNumLeft>blankNumRight || blankNumRight > 55) {
 						throw "Error: Please input a valid range(20-55)!";
 					}

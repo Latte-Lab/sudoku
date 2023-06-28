@@ -84,7 +84,7 @@ bool Sudoku::trySolve(int index) {
 	for (int i = 0; i < possibleNum.size(); i++) {
 		midResult[row][col] = possibleNum[i] + '1';
 		// 所有空都填入成功
-		if ((index + 1) == blankRow.size()) {
+		if ((index + size_t(1)) == blankRow.size()) {
 			solution++;
 			// result中只保存一种可能的解
 			if (solution == 1) {
@@ -110,7 +110,7 @@ bool Sudoku::trySolve(int index) {
 void Sudoku::setBoard(string str) {
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			board[i][j] = str[i * 9 + j];
+			board[i][j] = str[i * size_t(9) + j];
 			if (board[i][j] == '0') {
 				blankRow.push_back(i);
 				blankCol.push_back(j);
@@ -151,7 +151,7 @@ void Sudoku::generateSudoku(int blankNum, bool uni) {
 
 	// 挖掉blankNum个空
 	while (blankNum) {
-		srand(time(0));
+		srand(static_cast<unsigned int>(time(0)));
 		int x = rand() % 9;
 		int y = rand() % 9;
 		if (board[x][y] == '0')
