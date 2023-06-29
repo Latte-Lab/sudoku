@@ -57,18 +57,18 @@ bool Sudoku::trySolve(int index) {
 	bool colUsed[9] = { false };
 	bool blockUsed[9] = { false };
 	for (int j = 0; j < 9; j++) {
-		if (midResult[row][j] == '0')
+		if (midResult[row][j] == '$')
 			continue;
 		rowUsed[midResult[row][j] - '0' - 1] = true;
 	}
 	for (int i = 0; i < 9; i++) {
-		if (midResult[i][col] == '0')
+		if (midResult[i][col] == '$')
 			continue;
 		colUsed[midResult[i][col] - '0' - 1] = true;
 	}
 	for (int i = row / 3 * 3; i < row / 3 * 3 + 3; i++)
 		for (int j = col / 3 * 3; j < col / 3 * 3 + 3; j++) {
-			if (midResult[i][j] == '0')
+			if (midResult[i][j] == '$')
 				continue;
 			blockUsed[midResult[i][j] - '0' - 1] = true;
 		}
@@ -99,7 +99,7 @@ bool Sudoku::trySolve(int index) {
 		}
 		// 继续填入下一个，如果下一个没有可以填入的，撤回这一个填入的数字
 		if (!trySolve(index + 1)) {
-			midResult[row][col] = '0';
+			midResult[row][col] = '$';
 		}
 		else
 			return true;
@@ -111,7 +111,7 @@ void Sudoku::setBoard(string str) {
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			board[i][j] = str[i * size_t(9) + j];
-			if (board[i][j] == '0') {
+			if (board[i][j] == '$') {
 				blankRow.push_back(i);
 				blankCol.push_back(j);
 			}
@@ -154,10 +154,10 @@ void Sudoku::generateSudoku(int blankNum, bool uni) {
 		srand(static_cast<unsigned int>(time(0)));
 		int x = rand() % 9;
 		int y = rand() % 9;
-		if (board[x][y] == '0')
+		if (board[x][y] == '$')
 			continue;
 		char temp = board[x][y];
-		board[x][y] = '0';
+		board[x][y] = '$';
 		blankRow.push_back(x);
 		blankCol.push_back(y);
 		solveSudoku();

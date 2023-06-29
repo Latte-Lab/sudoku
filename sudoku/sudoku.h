@@ -8,9 +8,9 @@ private:
 	vector<int> blankCol;
 	int solution = 0;
 	bool unique = false;
-	char board[9][9] = { '0' };
-	char midResult[9][9] = { '0' };
-	char finalResult[9][9] = { '0' };
+	char board[9][9] = { '$' };
+	char midResult[9][9] = { '$' };
+	char finalResult[9][9] = { '$' };
 	void transform(int x, int y, bool isRow);
 	bool trySolve(int index);
 public:
