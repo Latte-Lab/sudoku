@@ -32,29 +32,27 @@ void writeTxt(const string name, const string content) {
 	os.close();
 }
 
-int main() {
-	string str;
-	getline(cin, str);
-	vector<string> cmd;
-	istringstream in(str);
-	while (in >> str) {
-		cmd.push_back(str);
-	}
-	if (cmd.size() == 0) {
+int main(int argc, char *argv[]) {
+	// 第0个参数是sudoku.exe！
+	if (argc == 1) {
 		cout << "Error: Please input a command!" << endl;
-		return 0;
+		return -1;
 	}
-	if (cmd[0] == "-c") {
+	else if (argc == 2) {
+		cout << "Error: Please input a valid command!" << endl;
+		return -1;
+	}
+	if (strcmp(argv[1], "-c") == 0) {
+		if (argc > 3) {
+			cout << "Error: Please input a valid command!" << endl;
+			return -1;
+		}
 		// 生成n个数独终局
 		int gameNum = 0;
-		try {
-			gameNum = atoi(cmd[1].c_str());
-		}
-		catch (exception e) {	// 异常主要是没有输入n或者输入的非整数
-			cout << "Error: Please input the number of game!" << endl;
-		}
+		gameNum = atoi(argv[2]);
 		if (gameNum < 1 || gameNum>1000000) {
 			cout << "Error: Please input a valid number(1-1000000)!" << endl;
+			return -1;
 		}
 		for (int i = 0; i < gameNum; i++) {
 			Sudoku sudoku;
@@ -64,12 +62,16 @@ int main() {
 		}
 		cout << "Generated " << gameNum << " sudoku boards!" << endl;
 	}
-	else if (cmd[0] == "-s") {
+	else if (strcmp(argv[1], "-s") == 0) {
+		if (argc > 3) {
+			cout << "Error: Please input a valid command!" << endl;
+			return -1;
+		}
 		// 从文件中读取数独游戏并求解，将答案保存到sudoku.txt中
 		string filename;
 		string content;
+		filename = argv[2];	
 		try {
-			filename = cmd[1];
 			content = readTxt(filename);
 			// 检查是否是合法有效的数独游戏
 			// --------0--------加上81个数独数字=98
@@ -77,7 +79,7 @@ int main() {
 				throw "Error: Please input a valid txt file!";
 			}
 		}
-		catch (exception e) {	// 异常主要是没有输入或输入错误的文件名，内容不合法
+		catch (exception e) {	// 异常主要是输入错误的文件名，内容不合法
 			cout << "Error: Please input a valid txt file!" << endl;
 		}
 		int gameNum = static_cast<int>(content.length() / 98);
@@ -99,32 +101,30 @@ int main() {
 		}
 		cout << "Solved " << gameNum << " sudokus to sudoku.txt!" << endl;
 	}
-	else if (cmd[0] == "-n") {
+	else if (strcmp(argv[1], "-n") == 0) {
 		// 生成数独游戏，保存到game.txt中
 		int gameNum = 0;
-		try {
-			gameNum = atoi(cmd[1].c_str());
-		}
-		catch (exception e) {	// 异常主要是没有输入n或者输入的非整数
-			cout << "Error: Please input the number of game!" << endl;
-		}
+		gameNum = atoi(argv[2]);
 		if (gameNum < 1 || gameNum > 10000) {
 			cout << "Error: Please input a valid number(1-10000)!" << endl;
+			return -1;
 		}
 		int blankNumLeft = 20, blankNumRight = 55;
 		bool unique = false;
-		if (cmd.size() > 2) {
-			if (cmd[2] == "-m") {
+		if (argc > 3) {
+			if (strcmp(argv[3], "-m") == 0) {
 				// 设置生成游戏的难度
 				int level = 0;
 				try {
-					level = atoi(cmd[3].c_str());
+					level = atoi(argv[4]);
 				}
 				catch (exception e) {	// 异常主要是没有输入或者输入的非整数
 					cout << "Error: Please input the level of game!" << endl;
+					return -1;
 				}
 				if (level < 1 || level > 3) {
 					cout << "Error: Please input a valid level(1-3)!" << endl;
+					return -1;
 				}
 				// 难度越高，挖空越多
 				if (level == 1) {
@@ -140,13 +140,14 @@ int main() {
 					blankNumRight = 55;
 				}
 			}
-			else if (cmd[2] == "-r") {
+			else if (strcmp(argv[3], "-r") == 0) {
 				// 设置挖空范围
 				string range;
 				try {
-					int index = static_cast<int>(cmd[3].find("-"));
-					blankNumLeft = atoi(cmd[3].substr(0, index).c_str());
-					blankNumRight = atoi(cmd[3].substr(static_cast<size_t>(index) + 1, cmd[3].length()).c_str());
+					string range = argv[4];
+					int index = static_cast<int>(range.find("-"));
+					blankNumLeft = atoi(range.substr(0, index).c_str());
+					blankNumRight = atoi(range.substr(static_cast<size_t>(index) + 1, range.length()).c_str());
 					if (blankNumLeft<20 || blankNumLeft>blankNumRight || blankNumRight > 55) {
 						throw "Error: Please input a valid range(20-55)!";
 					}
@@ -155,9 +156,13 @@ int main() {
 					cout << "Error: Please input the range of blanks!" << endl;
 				}
 			}
-			else if (cmd[2] == "-u") {
+			else if (strcmp(argv[3], "-u") == 0) {
 				// 设置生成的解唯一
 				unique = true;
+			}
+			else {
+				cout << "Error: Please input a valid command!" << endl;
+				return -1;
 			}
 		}
 		string output = "";
@@ -176,6 +181,10 @@ int main() {
 			cout << "Error: Fail to write game.txt!" << endl;
 		}
 		cout << "Generated " << gameNum << " sudokus to game.txt!" << endl;
+	}
+	else {
+		cout << "Error: Please input a valid command!" << endl;
+		return -1;
 	}
 	system("pause");
 	return 0;
