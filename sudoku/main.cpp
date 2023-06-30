@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
 		try {
 			ifstream file(filename);
 			if (!file.is_open()) {
-				throw runtime_error("ERROR: File " + filename + " does not exist!");
+				throw runtime_error("Error: File " + filename + " does not exist!");
 			}
 			file.close();
 		}
@@ -109,6 +109,7 @@ int main(int argc, char* argv[]) {
 		}
 		catch (exception e) {	// 异常主要是输入错误的文件名，内容不合法
 			cout << "Error: Please input a valid txt file!" << endl;
+			return -1;
 		}
 		int gameNum = static_cast<int>(content.length() / 98);
 		string answer = "";
@@ -126,6 +127,7 @@ int main(int argc, char* argv[]) {
 		}
 		catch (exception e) {
 			cout << "Error: Fail to write sudoku.txt!" << endl;
+			return -1;
 		}
 		cout << "Solved " << gameNum << " sudokus to sudoku.txt!" << endl;
 	}
@@ -205,8 +207,11 @@ int main(int argc, char* argv[]) {
 				}
 
 				try {
-					int left = std::stoi(argv[4]);
-					int right = std::stoi(argv[5]);
+					string range = argv[4];
+					int index = range.find('-');
+
+					int left = std::stoi(range.substr(0, index));
+					int right = std::stoi(range.substr(index+1));
 
 					if (left < 20 || left > right || right > 55) {
 						throw std::out_of_range("Error: Please input a valid range(20-55)!");
@@ -249,6 +254,7 @@ int main(int argc, char* argv[]) {
 		}
 		catch (exception&) {
 			cout << "Error: Fail to write game.txt!" << endl;
+			return -1;
 		}
 
 		cout << "Generated " << gameNum << " sudokus to game.txt!" << endl;
